@@ -60,3 +60,4 @@ Phase 2 (تعميق Orb بالصوت الفعلي)، 3 (الميكروفون+ا�
 |---------|--------|-----------|----------------|
 | Phase 1 | زر "إغلاق" في لوحة المهام كان نصاً غير قابل للنقر (انتهاك: زر لا يعمل) | استُبدل بـ `Modifier.clickable(onClick = onClose)` فعلي | ضمن CI الأول |
 | Phase 1 | `size.center` في Orb.kt: خاصية إضافية بدون import صريح — خطر خطأ compilation | حساب المركز يدوياً `Offset(size.width / 2f, size.height / 2f)` | ضمن CI الأول |
+| CI #1 | فشل step "Grant execute permission to gradlew": ملف `gradlew` لم يكن موجوداً في المستودع (أنشئت wrapper.properties فقط) | إضافة `gradlew` + `gradlew.bat` + `gradle-wrapper.jar` من المصدر الرسمي (وسم v8.10.2 في مستودع Gradle، مطابق لإصدار التوزيعة) والتحقق من سلامة الـ jar | CI #2 |
