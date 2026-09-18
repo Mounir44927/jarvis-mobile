@@ -20,14 +20,14 @@
 
 | البند | الحالة | الدليل |
 |-------|--------|--------|
-| Build | ⏳ PENDING | CI: أول `assembleDebug` ناجح على GitHub Actions |
-| Unit Tests (آلة الحالة + عقد المهمة — 12 اختبار) | ⏳ PENDING | `testDebugUnitTest` في CI |
+| Build | ✅ **PASS** | CI #4 (run 35399961645): `assembleDebug` نجح — APK 8.65 MB |
+| Unit Tests (آلة الحالة + عقد المهمة — 12 اختبار) | ✅ **PASS** | CI #4: 12 اختبار وحدة جميعها ناجح |
 | Integration | — NOT STARTED — | لا يوجد شيء للتكامل بعد |
 | Real Device | ⏳ PENDING | تثبيت APK artifact من CI واختبار يدوي (القائمة أدناه) |
 | Error Handling | ✅ PASS | آلة الحالة ترفض الانتقالات غير المنطقية + UI يعرض آخر رفض |
 | Arabic | ✅ PASS | واجهة عربية أصلية RTL، علامات الحالة بالعربية |
 | Performance | ⏳ PENDING | قياس على جهاز حقيقي |
-| **Status** | **NOT APPROVED YET** | ينتظر: CI أخضر + اختبار جهاز حقيقي |
+| **Status** | **BUILD + TESTS: PASS — ينتظر اختبار الجهاز الحقيقي للاعتماد النهائي** | APK جاهز: Actions → jarvis-debug-apk |
 
 ### قائمة اختبار الجهاز الحقيقي (Phase 1)
 - [ ] التثبيت من APK المبني في CI يعمل.
