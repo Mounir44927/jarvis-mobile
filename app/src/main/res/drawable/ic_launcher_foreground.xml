@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- أيقونة Jarvis: Orb بثلاث طبقات مطابق للهوية البصرية داخل التطبيق.
+     الرسم كله ضمن منطقة الأمان (66dp) من أيقونة Adaptive. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- الحلقة الخارجية -->
+    <path
+        android:pathData="M54,54 m-26,0 a26,26 0 1,1 52,0 a26,26 0 1,1 -52,0"
+        android:fillColor="#00000000"
+        android:strokeColor="#22D3EE"
+        android:strokeWidth="3"/>
+
+    <!-- قوس إضاءة علوي -->
+    <path
+        android:pathData="M54,28 a26,26 0 0,1 22.5,13"
+        android:fillColor="#00000000"
+        android:strokeColor="#67E8F9"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"/>
+
+    <!-- النواة -->
+    <path
+        android:pathData="M54,54 m-14,0 a14,14 0 1,1 28,0 a14,14 0 1,1 -28,0"
+        android:fillColor="#22D3EE"
+        android:fillAlpha="0.85"/>
+
+    <!-- لمعة النواة -->
+    <path
+        android:pathData="M49,49 m-4,0 a4,4 0 1,1 8,0 a4,4 0 1,1 -8,0"
+        android:fillColor="#E0F7FA"
+        android:fillAlpha="0.9"/>
+</vector>
