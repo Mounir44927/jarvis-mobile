@@ -1,0 +1,20 @@
+# Build
+*.iml
+.gradle/
+build/
+/local.properties
+/.idea
+.DS_Store
+/captures
+.externalNativeBuild
+.cxx
+
+# Secrets — ممنوع إدخال أي مفاتيح إلى Git (القسم 44)
+*.jks
+*.keystore
+keystore.properties
+.env
+google-services.json
+
+# Logs
+*.log
