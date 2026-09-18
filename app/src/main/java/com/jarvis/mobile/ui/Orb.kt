@@ -74,7 +74,7 @@ fun Orb(state: AgentState, modifier: Modifier = Modifier) {
     val pulseOffset = sin(pulse * PI).toFloat() * visual.pulseStrength
 
     Canvas(modifier = modifier.size(260.dp)) {
-        val c = size.center
+        val c = Offset(size.width / 2f, size.height / 2f)
         val r = size.minDimension / 2f * (0.92f + pulseOffset)
 
         // هالة متوهجة
