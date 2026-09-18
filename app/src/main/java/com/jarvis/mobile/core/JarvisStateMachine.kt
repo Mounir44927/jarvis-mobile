@@ -17,9 +17,12 @@ class JarvisStateMachine(
     private val _state = MutableStateFlow(AgentState.IDLE)
     val state: StateFlow<AgentState> = _state.asStateFlow()
 
-    /** آخر رفض مسجل — مفيد للتشخيص والاختبار. */
-    var lastRejection: Pair<AgentState, AgentEvent>? = null
-        private set
+    /** آخر رفض مسجل كحالة تفاعلية — تراقبه الواجهة والتشخيص مباشرة. */
+    private val _lastRejected = MutableStateFlow<Pair<AgentState, AgentEvent>?>(null)
+    val lastRejected: StateFlow<Pair<AgentState, AgentEvent>?> = _lastRejected.asStateFlow()
+
+    /** القيمة الفورية لآخر رفض — للتشخيص والاختبارات. */
+    val lastRejection: Pair<AgentState, AgentEvent>? get() = _lastRejected.value
 
     /**
      * جدول الانتقالات المسموحة: الحالة الحالية -> مجموعة الأحداث المقبولة.
@@ -71,7 +74,7 @@ class JarvisStateMachine(
         val current = _state.value
         val target = targetFor(current, event)
         if (target == null) {
-            lastRejection = current to event
+            _lastRejected.value = current to event
             onRejected(current, event)
             return null
         }

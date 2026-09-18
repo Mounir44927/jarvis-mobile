@@ -60,5 +60,6 @@ Phase 2 (تعميق Orb بالصوت الفعلي)، 3 (الميكروفون+ا�
 |---------|--------|-----------|----------------|
 | Phase 1 | زر "إغلاق" في لوحة المهام كان نصاً غير قابل للنقر (انتهاك: زر لا يعمل) | استُبدل بـ `Modifier.clickable(onClick = onClose)` فعلي | ضمن CI الأول |
 | Phase 1 | `size.center` في Orb.kt: خاصية إضافية بدون import صريح — خطر خطأ compilation | حساب المركز يدوياً `Offset(size.width / 2f, size.height / 2f)` | ضمن CI الأول |
+| CI #3 | فشل `compileDebugKotlin`: `MainActivity` أشار إلى `sm.lastRejected` كـ StateFlow بينما آلة الحالة تملك متغيراً عادياً فقط — تضارب بين ملفين | جعل آخر رفض حالة تفاعلية حقيقية: `_lastRejected: MutableStateFlow` + `lastRejected: StateFlow` مع إبقاء `lastRejection` كقيمة فورية للاختبارات | CI #4 |
 | CI #2 | فشل `processDebugResources`: `mipmap/ic_launcher not found` — المانيفست يشير للأيقونة ولم تُنشأ | إنشاء Adaptive Icon XML كامل (foreground vector بتصميم Orb + خلفية داكنة) — يكفي minSdk 26 بلا PNG | CI #3 |
 | CI #1 | فشل step "Grant execute permission to gradlew": ملف `gradlew` لم يكن موجوداً في المستودع (أنشئت wrapper.properties فقط) | إضافة `gradlew` + `gradlew.bat` + `gradle-wrapper.jar` من المصدر الرسمي (وسم v8.10.2 في مستودع Gradle، مطابق لإصدار التوزيعة) والتحقق من سلامة الـ jar | CI #2 |
