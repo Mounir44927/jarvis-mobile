@@ -15,11 +15,11 @@ Voice/Text Input          (Phase 3-4, 8)
    ↓
 Intent + Context          (Phase 5-6)
    ↓
-Task Planner              (Phase 9)  → Task Contract (هدف/قيود/أدوات/خطورة/معايير نجاح)
+Task Planner ✓            (Phase 9)  → Task Contract + TaskPlan (خطوات بعقود تحقق جاهزة)
    ↓
-Risk/Confirmation Engine  (Phase 10) → تصنيف خطورة كل خطوة → قرار تأكيد، بوابة WAITING_CONFIRMATION
+Risk/Confirmation Engine ✓ (Phase 10) → تصنيف خطورة كل خطوة → قرار تأكيد، بوابة WAITING_CONFIRMATION
    ↓
-Verification Engine       (Phase 11) → معايير تحقق قابلة للقياس لكل خطوة قبل أي قدرة تنفيذ
+Verification Engine ✓     (Phase 11) → معايير تحقق قابلة للقياس لكل خطوة قبل أي قدرة تنفيذ
    ↓
 Tool Selector (Scoring)   (Phase 12) → relevance, availability, permission, cost, latency, reliability, risk
    ↓
@@ -71,7 +71,7 @@ com.jarvis.mobile/
   voice/           Mic + VAD + جلسة صوتية + Barge-in         [Phase 3, 8, 56]
   stt/             STTProvider + Google/Vosk + اختبار عربي   [Phase 4]
   tts/             TTSProvider + ArabicTextNormalizer        [Phase 7, 61]
-  agent/           Planner، Skills، System Prompt            [Phase 9, 34, 62]
+  agent/           TaskPlanner + TaskPlan + عقد المهمة       [Phase 9 ✓]
   security/        RiskEngine + بوابة WAITING_CONFIRMATION   [Phase 10 ✓] ← قبل أي قدرة
   verification/    VerificationEngine + عقد التحقق            [Phase 11 ✓] ← قبل أي قدرة
   tools/           Tool Registry + كل أداة + Scoring         [Phase 12]
@@ -107,8 +107,8 @@ com.jarvis.mobile/
 
 ## 7. الاختبارات
 - وحدة: آلة الحالة (10 اختبارات)، عقد الحالات (4)، عقد المهمة (3)، عقد محرك المخاطرة والتأكيد
-  (13)، عقد محرك التحقق (13) = **43 اختبار `@Test`** — `./gradlew testDebugUnitTest`.
-  (عدّاد CI هو المرجع المعتمد عند أي خلاف مع الوثائق.)
+  (13)، عقد محرك التحقق (13)، مخطط المهام (13) = **56 اختبار `@Test`** —
+  `./gradlew testDebugUnitTest`. (عدّاد CI هو المرجع المعتمد عند أي خلاف مع الوثائق.)
 - Integration لاحقاً: Voice → STT → Agent → Risk → Tool → Verify → TTS (يبدأ فعلياً من Phase 12+
   بعد جاهزية بوابة المخاطرة والتحقق).
 - JARVIS_REAL_WORLD_TESTS (TEST 001-010) تُنشأ مع Phase 9.

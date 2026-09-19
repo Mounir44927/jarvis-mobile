@@ -69,7 +69,7 @@
 | 6 | الرد العربي | NOT STARTED |
 | 7 | TTS + ArabicTextNormalizer | NOT STARTED |
 | 8 | حلقة الصوت الكاملة | NOT STARTED |
-| 9 | Task Planner + Task Contract | NOT STARTED |
+| 9 | Task Planner + Task Contract | BUILD PASS — `agent/TaskPlanner` + `TaskPlan` + 13 اختبار (حتمية، SAFE FAILURE، تكامل end-to-end مع بوابة 10/11)؛ يُعتمد عند أول CI ناجح |
 | **10** | **محرك المخاطرة والتأكيد (Risk/Confirmation Engine)** | ✅ APPROVED — `security/RiskEngine` + 13 اختبار عقد، CI #8 أخضر (تعريف APPROVED لإطار 10/11 في SPEC: إطار مكتمل + اختبارات عقد ناجحة) |
 | **11** | **محرك التحقق (Verification Engine)** | ✅ APPROVED — `verification/VerificationEngine` + 13 اختبار عقد، CI #8 أخضر |
 | 12 | Tool Registry + Scoring | NOT STARTED |
