@@ -115,8 +115,9 @@ class TaskPlannerTest {
     @Test
     fun `خطوة غير مصنفة الخطورة ترفع خطوة الخطة إلى CRITICAL`() {
         val plan = planner.plan("احسب 2+2")
-        val steps = plan.steps + plan.steps.first().copy(risk = null)
-        val unclassifiedPlan = plan.copy(steps = steps)
+        // نسخة بمعرّف مختلف (معرّفات الخطوات فريدة بالعقد) وبلا تصنيف خطورة
+        val unclassified = plan.steps.first().copy(id = "calc.evaluate.unclassified", risk = null)
+        val unclassifiedPlan = plan.copy(steps = plan.steps + unclassified)
         assertEquals(
             "غير المصنف = CRITICAL — نفس منطق بوابة 10",
             RiskLevel.CRITICAL,
