@@ -22,7 +22,7 @@
 | البند | الحالة | الدليل |
 |-------|--------|--------|
 | Build | ✅ **PASS** | CI #4 وCI #7 (على 272559e): `assembleDebug` نجح — APK artifact منشور |
-| Unit Tests (آلة الحالة + عقد المهمة + عقد الحالات) | ✅ **PASS** | CI #7: جميعها ناجحة — **17** اختبار `@Test` (10 آلة حالة + 4 عقد حالات + 3 عقد مهمة). العدّاد الصحيح وقت CI #4 كان **13** بعدّ `git show ae2a771` — الرقم "12" الوارد سابقاً كان خطأ وثائقي (انظر سجل الفشل) |
+| Unit Tests (آلة الحالة + عقد المهمة + عقد الحالات) | ✅ **PASS** | CI #7 وCI #8: جميعها ناجحة — **17** اختبار في نطاق Phase 1 (10 آلة حالة + 4 عقد حالات + 3 عقد مهمة)، والإجمالي الكلي 43 بعد Phase 10/11. العدّاد الصحيح وقت CI #4 كان **13** بعدّ `git show ae2a771` — الرقم "12" الوارد سابقاً كان خطأ وثائقي (انظر سجل الفشل) |
 | عقد حالات آلة الحالة (`AgentStateContractTest`) | ✅ PASS | اعتُمد بدليل في CI #7 بعد إصلاح انتقال RESET من IDLE (انظر سجل الفشل) |
 | Integration | — NOT STARTED — | لا يوجد شيء للتكامل بعد |
 | Real Device | ⏳ PENDING | تثبيت APK artifact من CI واختبار يدوي (القائمة أدناه) |
@@ -70,8 +70,8 @@
 | 7 | TTS + ArabicTextNormalizer | NOT STARTED |
 | 8 | حلقة الصوت الكاملة | NOT STARTED |
 | 9 | Task Planner + Task Contract | NOT STARTED |
-| **10** | **محرك المخاطرة والتأكيد (Risk/Confirmation Engine)** | BUILD PASS — إطار + 13 اختبار عقد؛ يُعتمد عند أول CI ناجح |
-| **11** | **محرك التحقق (Verification Engine)** | BUILD PASS — إطار + 13 اختبار عقد؛ يُعتمد عند أول CI ناجح |
+| **10** | **محرك المخاطرة والتأكيد (Risk/Confirmation Engine)** | ✅ APPROVED — `security/RiskEngine` + 13 اختبار عقد، CI #8 أخضر (تعريف APPROVED لإطار 10/11 في SPEC: إطار مكتمل + اختبارات عقد ناجحة) |
+| **11** | **محرك التحقق (Verification Engine)** | ✅ APPROVED — `verification/VerificationEngine` + 13 اختبار عقد، CI #8 أخضر |
 | 12 | Tool Registry + Scoring | NOT STARTED |
 | 13 | Android Intents | NOT STARTED |
 | 14 | Accessibility | NOT STARTED |
