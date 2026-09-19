@@ -9,7 +9,6 @@ import com.jarvis.mobile.verification.VerificationEngine.Evidence
 import com.jarvis.mobile.verification.VerificationEngine.VerificationResult
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
-import org.junit.Assert.fail
 import org.junit.Test
 
 /**
@@ -181,7 +180,7 @@ class TaskPlannerTest {
                     Evidence.FileEvidence("حالة الملف", "/docs/تقرير.pdf", exists = true),
                     Evidence.FileEvidence("حجم الملف", "/docs/تقرير.pdf", exists = true, sizeBytes = 4096),
                 )
-                else -> fail("خطوة غير متوقعة في الخطة: ${step.id}")
+                else -> error("خطوة غير متوقعة في الخطة: ${step.id}")
             }
             val verdict = verifier.verify(step.verification, evidence)
             if (!verdict.isSuccess) allPassed = false
@@ -216,7 +215,7 @@ class TaskPlannerTest {
                     Evidence.FileEvidence("حالة الملف", "/docs/تقرير.pdf", exists = true),
                     Evidence.FileEvidence("حجم الملف", "/docs/تقرير.pdf", exists = true, sizeBytes = 4096),
                 )
-                else -> org.junit.Assert.fail("خطوة غير متوقعة: ${step.id}")
+                else -> error("خطوة غير متوقعة: ${step.id}")
             }
             assertTrue("الخطوة ${step.id} يجب أن تتحقق", verifier2.verify(step.verification, evidence).isSuccess)
         }
