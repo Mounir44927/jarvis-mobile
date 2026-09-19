@@ -22,7 +22,7 @@
 | البند | الحالة | الدليل |
 |-------|--------|--------|
 | Build | ✅ **PASS** | CI #4 وCI #7 (على 272559e): `assembleDebug` نجح — APK artifact منشور |
-| Unit Tests (آلة الحالة + عقد المهمة + عقد الحالات) | ✅ **PASS** | CI #7 وCI #8: جميعها ناجحة — **17** اختبار في نطاق Phase 1 (10 آلة حالة + 4 عقد حالات + 3 عقد مهمة)، والإجمالي الكلي 43 بعد Phase 10/11. العدّاد الصحيح وقت CI #4 كان **13** بعدّ `git show ae2a771` — الرقم "12" الوارد سابقاً كان خطأ وثائقي (انظر سجل الفشل) |
+| Unit Tests (آلة الحالة + عقد المهمة + عقد الحالات) | ✅ **PASS** | CI #7 وCI #8: جميعها ناجحة — **17** اختبار في نطاق Phase 1 (10 آلة حالة + 4 عقد حالات + 3 عقد مهمة)، والإجمالي الكلي 73 بعد Phase 12 (CI run 35457862471). العدّاد الصحيح وقت CI #4 كان **13** بعدّ `git show ae2a771` — الرقم "12" الوارد سابقاً كان خطأ وثائقي (انظر سجل الفشل) |
 | عقد حالات آلة الحالة (`AgentStateContractTest`) | ✅ PASS | اعتُمد بدليل في CI #7 بعد إصلاح انتقال RESET من IDLE (انظر سجل الفشل) |
 | Integration | — NOT STARTED — | لا يوجد شيء للتكامل بعد |
 | Real Device | ⏳ PENDING | تثبيت APK artifact من CI واختبار يدوي (القائمة أدناه) |
@@ -72,7 +72,7 @@
 | 9 | Task Planner + Task Contract | ✅ APPROVED — `agent/TaskPlanner` + `TaskPlan` + 13 اختبار، CI #12 أخضر (56 اختبار) |
 | **10** | **محرك المخاطرة والتأكيد (Risk/Confirmation Engine)** | ✅ APPROVED — `security/RiskEngine` + 13 اختبار عقد، CI #8 أخضر (تعريف APPROVED لإطار 10/11 في SPEC: إطار مكتمل + اختبارات عقد ناجحة) |
 | **11** | **محرك التحقق (Verification Engine)** | ✅ APPROVED — `verification/VerificationEngine` + 13 اختبار عقد، CI #8 أخضر |
-| 12 | Tool Registry + Scoring | BUILD PASS — `tools/ToolRegistry` + 17 اختبار عقد (disabled-by-default، تفعيل حصري عبر بوابة 10، رفض CRITICAL، scoring حتمي، أداة معطلة لا تُستدعى أبداً). **تحقق محلي فعلي: kotlinc 2.0.21 + JUnit 4.13.2 — 73/73 اختبار أخضر** (كامل حزمة الوحدة). إصلاح عقد أثناء الكتابة: إغلاق مسار جانبي كان يسمح بتفعيل أداة بعد رفض المستخدم في البوابة. يُعتمد عند أول CI ناجح |
+| 12 | Tool Registry + Scoring | ✅ APPROVED — `tools/ToolRegistry` + 17 اختبار عقد (disabled-by-default، تفعيل حصري عبر بوابة 10، رفض CRITICAL، scoring حتمي، أداة معطلة لا تُستدعى أبداً). **التحقق المزدوج:** محلي kotlinc+JUnit 73/73 + CI أخضر (run 35457862471: بوابة الصلاحيات + testDebugUnitTest + APK) — إصلاح عقد أثناء الكتابة: إغلاق مسار جانبي كان يسمح بتفعيل أداة بعد رفض المستخدم في البوابة |
 | 13 | Android Intents | NOT STARTED |
 | 14 | Accessibility | NOT STARTED |
 | 15 | الإشعارات | NOT STARTED |
