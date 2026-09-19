@@ -1,7 +1,7 @@
 # Jarvis Mobile
 
 مساعد شخصي صوتي ذكي (Agentic Assistant) للأندرويد، عربي أولاً، يعمل بمعمارية:
-فهم ← تخطيط ← أدوات ← تنفيذ ← مراقبة ← تحقق ← إصلاح ← نتيجة.
+فهم ← تخطيط ← تقييم مخاطرة وتأكيد ← تحقق ← أدوات ← تنفيذ ← مراقبة ← نتيجة.
 
 **نظام البناء:** BUILD → TEST → VERIFY → FIX → RETEST → APPROVE → NEXT.
 لا تُعلن ميزة "تمت" إلا بأدلة اختبار فعلية (انظر `FEATURE_STATUS.md`).
@@ -9,28 +9,32 @@
 ## الحالة الحالية
 
 Phase 0 + Phase 1 (هيكل المشروع + الواجهة + آلة الحالة) — التفاصيل في:
-- `ARCHITECTURE.md` — المعمارية وقرارات التصميم
-- `DEPENDENCIES.md` — كل تبعية وسببها وترخيصها وتحليل مجانيتها
+- `SPEC.md` — خطة الفيزات المعتمدة (أُعيد ترتيبها 2026-09-19: المخاطرة والتحقق قبل أي قدرة تنفيذية)
+- `ARCHITECTURE.md` — المعمارية وقرارات التصميم (ADR-10)
+- `DEPENDENCIES.md` — كل تبعية وسببها وترخيصها وتحليل مجانيتها + قائمة سماح الصلاحيات
 - `FEATURE_STATUS.md` — بوابة الجودة لكل ميزة
 
 ## ما هو منفذ فعلياً الآن
 - مشروع Android كامل قابل للبناء (Gradle 8.10.2 + AGP 8.7.3 + Kotlin 2.0.21 + Compose).
 - آلة حالة مركزية بجدول انتقالات صريح يرفض أي انتقال غير منطقي.
-- واجهة داكنة مستقبلية مع Orb متحرك يستجيب لكل الحالات: Idle/Listening/Thinking/Speaking/Executing/Error/Success.
+- واجهة داكنة مستقبلية مع Orb متحرك يغطي كل حالات آلة الحالة الـ **11**:
+  IDLE / LISTENING / TRANSCRIBING / UNDERSTANDING / PLANNING / EXECUTING / VERIFYING /
+  SPEAKING / WAITING_CONFIRMATION / ERROR / DONE — العدد والأسماء مؤكدة بعقد اختباري
+  (`AgentStateContractTest`) لا بوصف نصي. "التفكير" مُنمذج بحالتين: UNDERSTANDING ثم PLANNING.
 - لوحة حالة المهمة تعرض بيانات آلة الحالة الحقيقية فقط.
-- 11 اختبار وحدة لآلة الحالة وعقد المهمة.
-- CI مجاني عبر GitHub Actions يبني APK ويصدره كـ artifact مع كل push.
+- **17 اختبار وحدة** (آلة الحالة 10 + عقد الحالات 4 + عقد المهمة 3) — العدّاد في CI هو المرجع.
+- CI مجاني عبر GitHub Actions: بوابة صلاحيات (allowlist) + اختبارات + بناء APK + artifact مع كل push.
 
-## ما هو NOT IMPLEMENTED بعد (بترتيب Phases)
-الميكروفون (Phase 3)، STT (4)، LLM/Gemini (5)، رد محادثة عربي (6)، TTS (7)،
-حلقة الصوت الكاملة (8)، Task Planner (9)، Tool Registry (10)، Android Intents (11)،
-Accessibility (12)، الإشعارات (13)، الملفات (14)، البحث في الويب (15)، Browser Agent (16)،
-Sandbox للكود (17)، الذاكرة (18)، Verification Engine (19)، Self-Healing (20)،
-محرك المخاطرة والتأكيد (21)، الأداء (22)، اختبار جهاز حقيقي شامل (23)، Regression (24)، Release (25).
+## ما هو NOT IMPLEMENTED بعد (الترتيب المعتمد — SPEC.md)
+الميكروفون (Phase 3)، STT (4)، LLM/Gemini (5)، رد محادثة عربي (6)، TTS (7)، حلقة الصوت الكاملة (8)،
+Task Planner (9)، **محرك المخاطرة والتأكيد (10) + محرك التحقق (11) — قبل أي قدرة تنفيذية (ADR-10)**،
+Tool Registry (12)، Android Intents (13)، Accessibility (14)، الإشعارات (15)، الملفات (16)،
+البحث في الويب (17)، Browser Agent (18)، Sandbox للكود (19)، الذاكرة (20)، Self-Healing (21)،
+الأداء (22)، اختبار جهاز حقيقي شامل (23)، Regression (24)، Release (25).
 
 ## بناء APK عبر CI (المسار المعتمد حالياً)
 1. اربط المستودع بـ GitHub (المشروع محلي الآن).
-2. أي push يشغّل `Jarvis CI`: اختبارات وحدة + بناء APK.
+2. أي push يشغّل `Jarvis CI`: بوابة الصلاحيات + اختبارات وحدة + بناء APK.
 3. حمّل الـ APK من صفحة الـ workflow → Artifacts → `jarvis-debug-apk`.
 4. ثبّته على الهاتف (تفعيل "تثبيت من مصادر غير معروفة").
 
@@ -42,6 +46,7 @@ Sandbox للكود (17)، الذاكرة (18)، Verification Engine (19)، Self-
 ./gradlew testDebugUnitTest   # اختبارات الوحدة
 ./gradlew assembleDebug       # APK تجريبي
 ```
+(بيئة التطوير الحالية Termux بلا Android SDK — البناء الفعلي يتم عبر CI، انظر ADR-4.)
 
 ## الأسرار (القسم 44)
 لا مفتاح API داخل الكود أو Git — أبداً. مفتاح Gemini سيُدخل من إعدادات التطبيق

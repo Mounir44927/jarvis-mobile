@@ -27,6 +27,50 @@ jobs:
       - name: Grant execute permission to gradlew
         run: chmod +x gradlew
 
+      # Security gate (see DEPENDENCIES.md — Permissions Allowlist):
+      # fails the build if the merged manifest requests any permission not explicitly allowed.
+      # Added 2026-09-19 after a DUMP-permission report on a debug APK;
+      # the local manifest and all current dependencies were audited clean.
+      - name: Permissions allowlist gate
+        run: |
+          MANIFEST="app/src/main/AndroidManifest.xml"
+          echo "== Declared permissions (from source manifest, pre-merge) =="
+          grep -o 'android\.permission\.[A-Z_]*' "$MANIFEST" | LC_ALL=C sort -u | tee /tmp/declared.txt
+          cat > /tmp/allowed.txt <<'EOF'
+          android.permission.INTERNET
+          android.permission.RECORD_AUDIO
+          android.permission.POST_NOTIFICATIONS
+          android.permission.QUERY_ALL_PACKAGES
+          android.permission.VIBRATE
+          android.permission.WAKE_LOCK
+          android.permission.FOREGROUND_SERVICE
+          android.permission.RECEIVE_BOOT_COMPLETED
+          android.permission.USE_FULL_SCREEN_INTENT
+          android.permission.CAMERA
+          android.permission.READ_MEDIA_IMAGES
+          android.permission.READ_MEDIA_VIDEO
+          android.permission.READ_MEDIA_AUDIO
+          android.permission.READ_MEDIA_VISUAL_USER_SELECTED
+          android.permission.WRITE_EXTERNAL_STORAGE
+          android.permission.READ_EXTERNAL_STORAGE
+          android.permission.MANAGE_EXTERNAL_STORAGE
+          android.permission.ACCESS_NETWORK_STATE
+          android.permission.BLUETOOTH_CONNECT
+          android.permission.SYSTEM_ALERT_WINDOW
+          android.permission.PACKAGE_USAGE_STATS
+          android.permission.BIND_ACCESSIBILITY_SERVICE
+          android.permission.NFC
+          EOF
+          sed -i 's/^[[:space:]]*//' /tmp/allowed.txt
+          LC_ALL=C sort -u -o /tmp/allowed.txt /tmp/allowed.txt
+          VIOLATIONS=$(comm -23 /tmp/declared.txt /tmp/allowed.txt || true)
+          if [ -n "$VIOLATIONS" ]; then
+            echo "::error::Permissions outside the DEPENDENCIES.md allowlist: $VIOLATIONS"
+            echo "Update DEPENDENCIES.md (Permissions Allowlist) first, then add the permission here."
+            exit 1
+          fi
+          echo "OK: all declared permissions are on the allowlist."
+
       - name: Unit tests
         run: ./gradlew --no-daemon testDebugUnitTest --stacktrace
 
