@@ -104,7 +104,8 @@ com.jarvis.mobile/
   voice/           Mic + VAD + جلسة صوتية + Barge-in         [Phase 3, 8, 56]
   stt/             STTProvider + Google/Vosk + اختبار عربي   [Phase 4]
   tts/             TTSProvider (طبقات: Neural أساسي → عربي فاخم → System fallback) +
-                   ArabicTextNormalizer + JarvisVoiceSpec (شخصية الصوت) [Phase 7]
+                   ArabicTextNormalizer + JarvisVoiceSpec (شخصية الصوت) [Phase 7 — البنية ✓
+                   بترتيب طبقات مُفرض بنيوياً؛ ربط المحركات الفعلية (sherpa-onnx/System) لاحقاً]
   agent/           TaskPlanner + TaskPlan + عقد المهمة       [Phase 9 ✓]
   security/        RiskEngine + بوابة WAITING_CONFIRMATION   [Phase 10 ✓] ← قبل أي قدرة
   verification/    VerificationEngine + عقد التحقق            [Phase 11 ✓] ← قبل أي قدرة
@@ -141,9 +142,10 @@ com.jarvis.mobile/
 
 ## 7. الاختبارات
 - وحدة: آلة الحالة (10 اختبارات)، عقد الحالات (4)، عقد المهمة (3)، عقد محرك المخاطرة والتأكيد
-  (13)، عقد محرك التحقق (13)، مخطط المهام (13)، سجل الأدوات (17) = **73 اختبار `@Test`** —
+  (13)، عقد محرك التحقق (13)، مخطط المهام (13)، سجل الأدوات (17)، الصوت: شخصية (7) +
+  تطبيع عربي (18) + سلسلة الطبقات (11) = **109 اختبار `@Test`** —
   `./gradlew testDebugUnitTest`. (عدّاد CI هو المرجع المعتمد عند أي خلاف مع الوثائق؛
-  تحقق محلي بديل عند غياب SDK: kotlinc + JUnit مباشرة — أُنجز 2026-09-19 بنتيجة 73/73.)
+  تحقق محلي بديل عند غياب SDK: kotlinc + JUnit مباشرة — أُنجز 2026-09-19 بنتيجة 109/109.)
 - Integration لاحقاً: Voice → STT → Agent → Risk → Tool → Verify → TTS (يبدأ فعلياً من Phase 12+
   بعد جاهزية بوابة المخاطرة والتحقق).
 - JARVIS_REAL_WORLD_TESTS (TEST 001-010) تُنشأ مع Phase 9.
