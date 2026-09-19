@@ -29,7 +29,7 @@ class JarvisStateMachine(
      */
     private val transitions: Map<AgentState, Set<AgentEvent>> = mapOf(
         AgentState.IDLE to setOf(
-            AgentEvent.START_LISTENING, AgentEvent.UNDERSTAND, AgentEvent.SPEAK,
+            AgentEvent.START_LISTENING, AgentEvent.UNDERSTAND, AgentEvent.SPEAK, AgentEvent.RESET,
         ),
         AgentState.LISTENING to setOf(
             AgentEvent.STOP_LISTENING, AgentEvent.TRANSCRIBE, AgentEvent.RESET,
