@@ -69,10 +69,10 @@
 | 6 | الرد العربي | NOT STARTED |
 | 7 | TTS + ArabicTextNormalizer | NOT STARTED |
 | 8 | حلقة الصوت الكاملة | NOT STARTED |
-| 9 | Task Planner + Task Contract | BUILD PASS — `agent/TaskPlanner` + `TaskPlan` + 13 اختبار (حتمية، SAFE FAILURE، تكامل end-to-end مع بوابة 10/11)؛ يُعتمد عند أول CI ناجح |
+| 9 | Task Planner + Task Contract | ✅ APPROVED — `agent/TaskPlanner` + `TaskPlan` + 13 اختبار، CI #12 أخضر (56 اختبار) |
 | **10** | **محرك المخاطرة والتأكيد (Risk/Confirmation Engine)** | ✅ APPROVED — `security/RiskEngine` + 13 اختبار عقد، CI #8 أخضر (تعريف APPROVED لإطار 10/11 في SPEC: إطار مكتمل + اختبارات عقد ناجحة) |
 | **11** | **محرك التحقق (Verification Engine)** | ✅ APPROVED — `verification/VerificationEngine` + 13 اختبار عقد، CI #8 أخضر |
-| 12 | Tool Registry + Scoring | NOT STARTED |
+| 12 | Tool Registry + Scoring | BUILD PASS — `tools/ToolRegistry` + 17 اختبار عقد (disabled-by-default، تفعيل حصري عبر بوابة 10، رفض CRITICAL، scoring حتمي، أداة معطلة لا تُستدعى أبداً). **تحقق محلي فعلي: kotlinc 2.0.21 + JUnit 4.13.2 — 73/73 اختبار أخضر** (كامل حزمة الوحدة). إصلاح عقد أثناء الكتابة: إغلاق مسار جانبي كان يسمح بتفعيل أداة بعد رفض المستخدم في البوابة. يُعتمد عند أول CI ناجح |
 | 13 | Android Intents | NOT STARTED |
 | 14 | Accessibility | NOT STARTED |
 | 15 | الإشعارات | NOT STARTED |
@@ -96,6 +96,7 @@
 
 | التاريخ | ما فشل | كيف أُصلح | إعادة الاختبار |
 |---------|--------|-----------|----------------|
+| 2026-09-19 | تحقق محلي لـPhase 12: 3 إخفاقات من 17 — اثنان ببيانات اختبار (أدوات لم تُفعَّل عبر البوابة قبل eligibleFor) وواحد بتدفق آلة الحالة (بوابة ثانية من EXECUTING تحتاج إكمال الدورة RESET→UNDERSTAND→PLAN أولاً) + **ثغرة عقد حقيقية في ToolRegistry**: `completePendingEnable(confirmed=true)` كان يفعّل الأداة حتى بعد رفض المستخدم في البوابة (مسار جانبي يخالف "لا مسار جانبي") | إصلاح الكود: الإتمام الآن يتطلب تعلقاً من نفس البوابة (نفس محرك المخاطرة) + دليل تأكيد فعلي في سجل تدقيقها (آخر سجل passedGate لنفس الخطوة)؛ الرفض يمسح التعلق نهائياً. وتصحيح بيانات الاختبار الثلاثة | إعادة التشغيل المحلي: **73/73 أخضر** + CI القادم |
 | 2026-09-19 | CI #11 فشل باختبار واحد من أصل 56: اختبار "غير المصنف = CRITICAL" أضاف نسخة من خطوة بنفس المعرّف فكسر عقد فريدية المعرّفات في TaskPlan (IllegalArgumentException) | إعطاء الخطوة المضافة معرّفاً مختلفاً في الاختبار — العقد نفسه صحيح والخطأ في بناء بيانات الاختبار | CI #12 (المتوقع) |
 | 2026-09-19 | CI #10 فشل في الترجمة (`compileDebugUnitTestKotlin`): فرعان في `when` من اختبارات Phase 9 استخدما `org.junit.Assert.fail()` — دالة Java تعيد void/Unit فصار نوع التعبير Any بدل List‹Evidence› | استبدالهما بـ `error()` من مكتبة Kotlin القياسية — تعيد Nothing فيُحتفظ بنوع التعبير | CI #11 (ترجمة ناجحة، وبقي اختبار واحد) |
 | 2026-09-19 | CI #6 فشل في اختبارات الوحدة: عقد الحالات الجديد (`AgentStateContractTest` في 073cdd6) يطالب بعمل RESET من كل حالة، بينما جدول الانتقالات لم يسمح به من IDLE — ففشل `كل حالة تقبل على الأقل RESET` | إضافة `AgentEvent.RESET` إلى أحداث IDLE في `JarvisStateMachine` (RESET من IDLE = بلا عملية تُعيد إلى IDLE، متسق مع بقية الجدول) | CI #7 (272559e) ✅ |

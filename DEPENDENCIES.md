@@ -79,7 +79,8 @@ RECORD_AUDIO في خدمة خلفية بلا إشعار مستخدم، أي صل
 | Agent framework | **LangChain4j** | Apache-2.0 | ✅ مكتبة | يُقيَّم من Phase 9+ للأدوات/الذاكرة بدل إعادة اختراعها (BOM 1.x حالياً) |
 | Web research مرجع | **Browser Use** | MIT | ✅ مرجع منهجي | مرجع تصميم لوحدة الويب؛ التنفيذ فعلياً عبر HTTP APIs أولاً ثم أتمتة متصفح عند الحاجة (القسم 4) |
 | PDF | Android's PdfRenderer (قراءة) + مكتبة إنشاء مفتوحة المصدر | Apache-2.0 | ✅ | Phase 16 (الملفات — الترتيب الجديد SPEC.md) |
-| TTS | System TTS engine (يوجد على الأجهزة) + ArabicTextNormalizer خاص | — | ✅ | Phase 7؛ محركات أعلى جودة تُقيَّم كـ Provider لاحق |
+| TTS Neural (أساسي) | **sherpa-onnx** (k2-fsa/sherpa-onnx) | Apache-2.0 | ✅ مكتبة مجانية + نماذج مجانية (بما فيها أصوات عربية رجولية مثل Piper ar_JO) — offline على aarch64 | Phase 7 — الأساس حسب ADR-7/11 المنقح: المواصفة الصوتية (فخم/عميق/طبيعي) لا يحققها System TTS الافتراضي. يُفحص الـ AAR وقت الإدخال (بروتوكول الإضافة أعلاه) |
+| TTS fallback | System TTS engine (يوجد على الأجهزة) | نظام Android | ✅ | Phase 7 — **Fallback فقط** لا الخيار الرئيسي (ADR-7 المنقح 2026-09-19) + ArabicTextNormalizer خاص بيننا |
 
 ## ممنوعات
 - أي مفتاح API في الكود أو Git أو Logs (القسم 44).
