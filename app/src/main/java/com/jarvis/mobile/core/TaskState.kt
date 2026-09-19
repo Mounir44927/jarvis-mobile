@@ -1,9 +1,10 @@
 package com.jarvis.mobile.core
 
 /**
- * مستويات الخطورة (القسم 22). تُستخدم لاحقاً في Confirmation Engine.
+ * مستويات الخطورة (القسم 22). مُوسَّع بـ CRITICAL في Phase 10 (SPEC.md — قرار 2026-09-19).
+ * تُستخدم في RiskGate (security) لبوابة التأكيد الإلزامية قبل أي تنفيذ غير منخفض الخطورة.
  */
-enum class RiskLevel { LOW, MEDIUM, HIGH }
+enum class RiskLevel { LOW, MEDIUM, HIGH, CRITICAL }
 
 /**
  * حالة المهمة الداخلية المعلنة في القسم 6.

@@ -72,8 +72,8 @@ com.jarvis.mobile/
   stt/             STTProvider + Google/Vosk + اختبار عربي   [Phase 4]
   tts/             TTSProvider + ArabicTextNormalizer        [Phase 7, 61]
   agent/           Planner، Skills، System Prompt            [Phase 9, 34, 62]
-  security/        Risk + Confirmation Layer                 [Phase 10] ← قبل أي قدرة
-  verification/    Verification Engine + Verification Contract [Phase 11] ← قبل أي قدرة
+  security/        RiskEngine + بوابة WAITING_CONFIRMATION   [Phase 10 ✓] ← قبل أي قدرة
+  verification/    VerificationEngine + عقد التحقق            [Phase 11 ✓] ← قبل أي قدرة
   tools/           Tool Registry + كل أداة + Scoring         [Phase 12]
   android/         Intents + Clipboard + Share               [Phase 13]
   accessibility/   AccessibilityService controller           [Phase 14]
@@ -95,8 +95,10 @@ com.jarvis.mobile/
 - كل انتقال له اختبار وحدة (`JarvisStateMachineTest`) يشمل المسارات الإلزامية:
   الحلقة الكاملة، Barge-in، مسار التأكيد، مسار التعافي من الفشل.
 - UI يستمع للـ StateFlow فقط — لا حالة UI منفصلة عن حالة النظام.
-- الحالاتان WAITING_CONFIRMATION وVERIFYING موجودتان منذ Phase 1 — الأساس الحالاتي لمحركي
-  المخاطرة (10) والتحقق (11) جاهز قبل أي قدرة تنفيذية.
+- الحالاتان WAITING_CONFIRMATION وVERIFYING موجودتان منذ Phase 1 — ومحرك المخاطرة (Phase 10،
+  `security/RiskEngine`) ومحرك التحقق (Phase 11، `verification/VerificationEngine`) مبنيان فوق هذا
+  الأساس: بوابة 10 تقود الآلة فعلياً عبر WAITING_CONFIRMATION (لا مسار جانبي إلى EXECUTING)،
+  ونتيجة التحقق من 11 هي وحدها ما يبرر SUCCESS أو FAIL.
 
 ## 6. الواجهة
 - خلفية `#050A14`، Orb مركزي 260dp بثلاث طبقات متحركة (هالة، نواة، قوسان دوّاران).
@@ -104,8 +106,9 @@ com.jarvis.mobile/
 - كل الحالات الـ 11 لها إعداد بصري خاص في `Orb.kt` (التحقق عبر AgentStateContractTest).
 
 ## 7. الاختبارات
-- وحدة: آلة الحالة (10 اختبارات)، عقد الحالات (4 اختبارات)، عقد المهمة (3 اختبارات) =
-  **17 اختبار `@Test`** — `./gradlew testDebugUnitTest`. (عدّاد CI هو المرجع المعتمد عند أي خلاف مع الوثائق.)
+- وحدة: آلة الحالة (10 اختبارات)، عقد الحالات (4)، عقد المهمة (3)، عقد محرك المخاطرة والتأكيد
+  (13)، عقد محرك التحقق (13) = **43 اختبار `@Test`** — `./gradlew testDebugUnitTest`.
+  (عدّاد CI هو المرجع المعتمد عند أي خلاف مع الوثائق.)
 - Integration لاحقاً: Voice → STT → Agent → Risk → Tool → Verify → TTS (يبدأ فعلياً من Phase 12+
   بعد جاهزية بوابة المخاطرة والتحقق).
 - JARVIS_REAL_WORLD_TESTS (TEST 001-010) تُنشأ مع Phase 9.
