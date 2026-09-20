@@ -65,14 +65,31 @@ class JarvisVoiceSessionTest {
         val chain = TtsFallbackChain(listOf(neural, system))
         val results = mutableListOf<TtsResult>()
         val latch = CountDownLatch(1)
+
+        /** منفذ الجلسة نفسه تحت سيطرة الاختبار — يسمح بحاجز ترتيبي حتمي. */
+        private val executor = Executors.newSingleThreadExecutor { r ->
+            Thread(r, "jarvis-voice-test").apply { isDaemon = true }
+        }
+
         val session = JarvisVoiceSession(
             chain = chain,
             machine = machine,
+            executor = executor,
             onResult = {
                 results.add(it)
                 latch.countDown()
             },
         )
+
+        /**
+         * حاجز ترتيبي حتمي: عند تنفيذ هذه المهمة تكون كل مهام المنفذ السابقة قد
+         * انتهت فعلاً. يُستخدم حيث لا نتيجة متوقعة (رفض آلة الحالة لا يُسجَّل كنتيجة).
+         */
+        fun awaitIdle() {
+            val fence = CountDownLatch(1)
+            executor.execute { fence.countDown() }
+            assertTrue("انتهت مهام المنفذ خلال المهلة", fence.await(5, TimeUnit.SECONDS))
+        }
     }
 
     // ---------------------------------------------------------------
@@ -99,10 +116,14 @@ class JarvisVoiceSessionTest {
         harness.machine.allowSpeaking = false
 
         harness.session.speakGreetingOnce()
-        assertTrue(harness.latch.await(5, TimeUnit.SECONDS))
+        // الرفض إشارة نجاح للامتناع لا نتيجة — لذا ننتظر فراغ المنفذ لا وصول نتيجة
+        harness.awaitIdle()
 
         assertEquals("آلة الحالة رفضت SPEAKING → لا نطق", 0, harness.neural.receivedTexts.size)
-        assertTrue(harness.results.isEmpty())
+        assertEquals("لا fallback ولا لمس للطبقة الأدنى", 0, harness.system.receivedTexts.size)
+        assertTrue("الرفض لا يُسجَّل لا نجاحاً ولا فشلاً", harness.results.isEmpty())
+        assertEquals("المحاولة رُصدت مرة واحدة", 1, harness.machine.begins)
+        assertEquals("لا إعادة للآلة بعد محاولة لم تبدأ", 0, harness.machine.dones)
     }
 
     @Test
@@ -144,12 +165,16 @@ class JarvisVoiceSessionTest {
         assertTrue(harness.latch.await(5, TimeUnit.SECONDS))
 
         val spoken = harness.neural.receivedTexts.single()
+        val expected = ArabicTextNormalizer().normalize(JarvisVoiceSession.GREETING)
         assertEquals(
             "التطبيع لا يُفسد التحية الثابتة (حتمي)",
-            ArabicTextNormalizer().normalize(JarvisVoiceSession.GREETING),
+            expected,
             spoken,
         )
-        assertEquals(JarvisVoiceSession.GREETING, spoken.trim().let { spoken })
+        // المنطوق = التحية الرسمية كاملة (التشكيل وحده يُزال: أهلاً → أهلا) — لا كلمة تُفقد
+        for (fragment in listOf("أهلا", "بك", "جارفيس", "في خدمتك")) {
+            assertTrue("جزء مفقود من التحية: $fragment — المنطوق: \"$spoken\"", spoken.contains(fragment))
+        }
     }
 
     // ---------------------------------------------------------------
@@ -167,11 +192,11 @@ class JarvisVoiceSessionTest {
         // انتظار تنفيذ الطلبين بالتسلسل (منفذ أحادي)
         assertTrue(harness.latch.await(5, TimeUnit.SECONDS))
 
-        // prepare لم يُستدعَ من الجلسة هنا (المزود الحقيقي يهيئ ذاتياً عند أول speak
-        // عبر خطة إنشاء محركة) — الأهم: لا استدعاء مباشر خارج السلسلة.
-        // كل نص وصل عبر chain.speak (تطبيع + شخصية + ترتيب)
+        // كل نص وصل عبر chain.speak (تطبيع + شخصية + ترتيب + تهيئة) — لا استدعاء مباشر
         assertEquals(2, neural.receivedTexts.size)
         assertEquals(0, system.receivedTexts.size)
+        assertEquals("الطبقة المستخدمة تُهيَّأ مرة واحدة فقط للطلبين", 1, neural.prepareCalls)
+        assertEquals("طبقة لم تُستخدم لا تُهيَّأ إطلاقاً", 0, system.prepareCalls)
     }
 
     // ---------------------------------------------------------------
@@ -304,6 +329,11 @@ class JarvisVoiceSessionTest {
         assertTrue(both.await(5, TimeUnit.SECONDS))
 
         assertEquals(2, harness.neural.receivedTexts.size)
-        assertEquals(listOf("أولاً", "ثانياً"), harness.neural.receivedTexts)
+        // الترتيب محفوظ، والنص الواصل هو الصيغة المطبَّعة (التطبيع إلزامي قبل أي طبقة)
+        val normalizer = ArabicTextNormalizer()
+        assertEquals(
+            listOf(normalizer.normalize("أولاً"), normalizer.normalize("ثانياً")),
+            harness.neural.receivedTexts,
+        )
     }
 }
