@@ -102,7 +102,8 @@ class JarvisVoiceSessionTest {
 
         // محاكاة recomposition متعدد + إعادة إنشاء Activity: استدعاءات متكررة
         repeat(5) { harness.session.speakGreetingOnce() }
-        assertTrue(harness.latch.await(5, TimeUnit.SECONDS))
+        // انتظار اكتمال المهمة فعلاً: إشارة النتيجة تسبق begin/done فلا تكفي وحدها
+        harness.awaitIdle()
 
         assertEquals("نُطقت التحية مرة واحدة بالضبط", 1, harness.neural.receivedTexts.size)
         assertEquals("fallback لم يُلمس", 0, harness.system.receivedTexts.size)
@@ -189,8 +190,8 @@ class JarvisVoiceSessionTest {
 
         harness.session.speak("نص أول")
         harness.session.speak("نص ثانٍ")
-        // انتظار تنفيذ الطلبين بالتسلسل (منفذ أحادي)
-        assertTrue(harness.latch.await(5, TimeUnit.SECONDS))
+        // انتظار تنفيذ الطلبين بالتسلسل (منفذ أحادي) — الاثنين لا الأول فقط
+        harness.awaitIdle()
 
         // كل نص وصل عبر chain.speak (تطبيع + شخصية + ترتيب + تهيئة) — لا استدعاء مباشر
         assertEquals(2, neural.receivedTexts.size)
