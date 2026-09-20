@@ -9,7 +9,7 @@ import java.io.InputStream
  * مُثبِّت بيانات espeak-ng — ينسخ شجرة `espeak-ng-data` من assets إلى تخزين التطبيق الحقيقي.
  *
  * لماذا هذا **إلزامي** (وتحقق بالقراءة من مصدر sherpa-onnx v1.13.8)؟
- * espeak-ng (المدمج في sherpa-onnx) يقرأ `phontab/phondata/phonindex/intonations/lang/**_dict`
+ * espeak-ng (المدمج في sherpa-onnx) يقرأ phontab/phondata/phonindex/intonations/lang/xx_dict
  * من نظام ملفات حقيقي — لا يفهم مسارات assets إطلاقاً. في
  * `piper-phonemize-lexicon.cc::InitEspeak()` يمرَّر data_dir إلى `espeak_Initialize`،
  * وإن لم يكن مساراً مطلقاً صالحاً يسجّل:

@@ -105,12 +105,12 @@ class SherpaOnnxTtsProvider(
             }
         }
 
-        /** مسار الموديل داخل assets — Piper ar_JO-kareem medium (int8). */
+        /** مجلد النموذج داخل assets — Piper ar_JO-kareem medium (int8). */
+        private const val MODEL_DIR = "tts/vits-piper-ar_JO-kareem-medium-int8"
+
         const val MODEL_ASSET = "$MODEL_DIR/ar_JO-kareem-medium.onnx"
         const val TOKENS_ASSET = "$MODEL_DIR/tokens.txt"
         const val ESPEAK_DIR_ASSET = "$MODEL_DIR/${EspeakDataInstaller.ESPEAK_ASSET_DIR}"
-
-        private const val MODEL_DIR = "tts/vits-piper-ar_JO-kareem-medium-int8"
     }
 
     private class SherpaEngineImpl(private val tts: OfflineTts) : SherpaEngine {
