@@ -27,6 +27,17 @@ jobs:
       - name: Grant execute permission to gradlew
         run: chmod +x gradlew
 
+      # Integrity gate (see DEPENDENCIES.md — sherpa-onnx entry):
+      # the audited binaries are committed to this repo (CI has no model-download step),
+      # so a swapped or corrupted asset/AAR must fail the build instead of shipping silently.
+      - name: Binary integrity gate (sha256)
+        run: |
+          set -e
+          check() { echo "$1  $2" | sha256sum -c -; }
+          check 633c24321e06b1fe79feafa03ea16cbc0f8a286641e2da3559bac91bdb13bd96 app/libs/sherpa-onnx-1.13.8.aar
+          check 71ff7b08354a3c9a15859fdb9533499bc51df6b431867773a864f8c9c7c3c9a1 app/src/main/assets/tts/vits-piper-ar_JO-kareem-medium-int8/ar_JO-kareem-medium.onnx
+          check 620e1aecf1a68fea3ba5850d137b0138fa2037c9b372dad13b95a2a215d0849a app/src/main/assets/tts/vits-piper-ar_JO-kareem-medium-int8/tokens.txt
+
       # Security gate (see DEPENDENCIES.md — Permissions Allowlist):
       # fails the build if the merged manifest requests any permission not explicitly allowed.
       # Added 2026-09-19 after a DUMP-permission report on a debug APK;

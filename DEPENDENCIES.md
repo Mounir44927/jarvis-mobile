@@ -82,6 +82,23 @@ RECORD_AUDIO في خدمة خلفية بلا إشعار مستخدم، أي صل
 | TTS Neural (أساسي) | **sherpa-onnx** (k2-fsa/sherpa-onnx) | Apache-2.0 | ✅ مكتبة مجانية + نماذج مجانية (بما فيها أصوات عربية رجولية مثل Piper ar_JO) — offline على aarch64 | Phase 7 — الأساس حسب ADR-7/11 المنقح: المواصفة الصوتية (فخم/عميق/طبيعي) لا يحققها System TTS الافتراضي. يُفحص الـ AAR وقت الإدخال (بروتوكول الإضافة أعلاه) |
 | TTS fallback | System TTS engine (يوجد على الأجهزة) | نظام Android | ✅ | Phase 7 — **Fallback فقط** لا الخيار الرئيسي (ADR-7 المنقح 2026-09-19) + ArabicTextNormalizer خاص بيننا |
 
+## sherpa-onnx v1.13.8 — فحص الإدخال الفعلي (2026-09-19)
+
+- **AAR:** `app/libs/sherpa-onnx-1.13.8.aar` من الإصدار الرسمي v1.13.8 على GitHub Releases (k2-fsa/sherpa-onnx).
+- **SHA-256:** `633c24321e06b1fe79feafa03ea16cbc0f8a286641e2da3559bac91bdb13bd96` (مُتحقَّق وقت الإدخال، أُعيد التحقق محلياً 2026-09-20 وهو مطابق — **بوابة CI تفرضه الآن** عند كل بناء).
+- **فحص الـ AAR فعلياً:** AndroidManifest الداخلي بلا أي uses-permission (لا اندماج صامت للصلاحيات)؛ minSdk 21؛ حزم JNI للمعمارات الأربع (arm64-v8a، armeabi-v7a، x86، x86_64)؛ كلاسات `com.k2fsa.sherpa.onnx.OfflineTts*` (Kotlin metadata mv=1.7 متوافقة مع Kotlin 2.0.21).
+- **النموذج:** `vits-piper-ar_JO-kareem-medium-int8` (عربي رجولي، متحدث واحد، 22.05kHz) من release tag `tts-models`. SHA-256 **للملف المنزَّل وقت الإدخال** (قبل الاستخراج): `215910431bbe8236b77242b19d869a4eda6073e9cd424bec45b6d4a59a790d82`.
+- **الملفات المضمّنة فعلياً في المستودع** تحت `app/src/main/assets/tts/vits-piper-ar_JO-kareem-medium-int8/` — هذه هي الأصول التي يقرأها التطبيق، ولها SHA-256 مُتحقَّق محلياً بـ`sha256sum` (2026-09-20) وتفرضه بوابة CI:
+  - `ar_JO-kareem-medium.onnx` (18,579,711 بايت، int8): `71ff7b08354a3c9a15859fdb9533499bc51df6b431867773a864f8c9c7c3c9a1`
+  - `tokens.txt` (159 سطراً، eSpeak IPA): `620e1aecf1a68fea3ba5850d137b0138fa2037c9b372dad13b95a2a215d0849a`
+  - `espeak-ng-data/` (355 ملفاً، ~18MB، مع `MODEL_CARD`): بيانات espeak-ng الكاملة؛ **يجب نسخها إلى نظام ملفات حقيقي** قبل إنشاء المحرك (espeak-ng لا يقرأ من assets — التفاصيل في `tts/EspeakDataInstaller.kt`).
+- قراءة الأرقام/التطبيع عربي داخلي عندنا (ArabicTextNormalizer) — لا تبعية إضافية.
+- **الترخيص:** sherpa-onnx Apache-2.0؛ نموذج kareem مجاني (راجع MODEL_CARD/المصدر داخل الأصول). بلا حسابات/بطاقات/مفاتيح.
+
+| الصلاحية من الـ AAR | الحالة |
+|---------------------|--------|
+| (لا شيء — الـAAR بلا صلاحيات) | ✅ لا تأثير على قائمة السماح |
+
 ## ممنوعات
 - أي مفتاح API في الكود أو Git أو Logs (القسم 44).
 - أي خدمة تتطلب بطاقة لتفعيل "المجاني".

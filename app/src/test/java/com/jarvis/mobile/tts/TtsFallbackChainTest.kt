@@ -20,12 +20,16 @@ class TtsFallbackChainTest {
         override val tier: TtsTier,
         private val result: TtsResult? = null,
         private val throwOn: ((String, JarvisVoiceSpec) -> Boolean)? = null,
+        private val throwOnPrepare: Boolean = false,
     ) : TtsProvider {
-        var prepareCalled: Boolean = false
+        var prepareCount: Int = 0
             private set
 
+        val prepareCalled: Boolean get() = prepareCount > 0
+
         override fun prepare() {
-            prepareCalled = true
+            prepareCount++
+            if (throwOnPrepare) throw IllegalStateException("فشل تهيئة مفتعل للطبقة $tier")
         }
 
         override fun speak(text: String, voice: JarvisVoiceSpec): TtsResult {
@@ -83,6 +87,31 @@ class TtsFallbackChainTest {
         val result = chain.speak("اختبار السلسلة", spec)
 
         assertEquals(TtsTier.SYSTEM, (result as TtsResult.Success).tier)
+    }
+
+    @Test
+    fun `السلسلة تهيّئ الطبقة تلقائيا مرة واحدة عند أول نطق فعلي`() {
+        val neural = FakeProvider(TtsTier.NEURAL)
+        val chain = TtsFallbackChain(listOf(neural))
+
+        chain.speak("استعد", spec)
+        chain.speak("مرة أخرى", spec)
+
+        assertEquals("التهيئة الثقيلة لا تُعاد لكل نطق", 1, neural.prepareCount)
+    }
+
+    @Test
+    fun `فشل تهيئة NEURAL يسقط لـSYSTEM بلا انهيار`() {
+        val neural = FakeProvider(TtsTier.NEURAL, throwOnPrepare = true)
+        val system = FakeProvider(TtsTier.SYSTEM)
+        val chain = TtsFallbackChain(listOf(neural, system))
+
+        val result = chain.speak("مرحباً", spec)
+
+        assertEquals(TtsTier.SYSTEM, (result as TtsResult.Success).tier)
+        assertEquals("فشل عابر لا يُثبَّت — يُعاد في الطلب التالي", 1, neural.prepareCount)
+        chain.speak("مرة أخرى", spec)
+        assertEquals(2, neural.prepareCount)
     }
 
     @Test

@@ -36,6 +36,11 @@ android {
         compose = true
     }
 
+    // منع ضغط أصول TTS (ONNX/بيانات espeak) — يجب أن يقرأها sherpa-onnx مباشرة من الـ APK
+    androidResources {
+        noCompress += listOf("onnx", "bin", "json", "txt")
+    }
+
     testOptions {
         unitTests.isReturnDefaultValues = true
     }
@@ -48,6 +53,11 @@ kotlin {
 }
 
 dependencies {
+    // sherpa-onnx v1.13.8 (Apache-2.0) — TTS Neural محلي (Phase 7 — ADR-7/11)
+    // AAR محلي موقّع بـSHA-256: 633c24321e06b1fe79feafa03ea16cbc0f8a286641e2da3559bac91bdb13bd96
+    // (تم فحص الـ AAR: بلا صلاحيات، minSdk 21، حزم JNI للمعمارات الأربع — DEPENDENCIES.md)
+    implementation(files("libs/sherpa-onnx-1.13.8.aar"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

@@ -41,6 +41,7 @@ private val Accent = Color(0xFF67E8F9)
 fun JarvisScreen(
     state: AgentState,
     lastRejected: Pair<AgentState, AgentEvent>?,
+    latestTier: String = "—",
 ) {
     var panelOpen by remember { mutableStateOf(false) }
 
@@ -91,6 +92,7 @@ fun JarvisScreen(
             TaskPanel(
                 state = state,
                 lastRejected = lastRejected,
+                latestTier = latestTier,
                 onClose = { panelOpen = false },
                 modifier = Modifier.align(Alignment.BottomCenter),
             )
@@ -108,6 +110,7 @@ private fun TaskPanel(
     lastRejected: Pair<AgentState, AgentEvent>?,
     onClose: () -> Unit,
     modifier: Modifier = Modifier,
+    latestTier: String = "—",
 ) {
     Column(
         modifier = modifier
@@ -142,6 +145,7 @@ private fun TaskPanel(
         )
         TaskRow("المهمة الجارية", "— (تنفيذ المهام الفعلي يبدأ في Phase 9)")
         TaskRow("الأدوات المستخدمة", "—")
+        TaskRow("صوت Jarvis (آخر نطق)", latestTier)
         Spacer(Modifier.height(8.dp))
         Text(
             text = "هذه اللوحة تعرض بيانات آلة الحالة الحقيقية فقط، ولا تعرض أي محاكاة أو بيانات وهمية.",
